@@ -1,4 +1,8 @@
-Put this in your Moodle local directory and ensure you have debugging set to 'Developer'.
+Get the file from 'Download' button as tarball or zip.
+
+Put this in your Moodle local directory in a folder called 'broom'.
+
+Ensure you have debugging set to 'Developer'.
 
 The plugin then appears under 'Developer' setting in admin menu. Requires admin access.
 
