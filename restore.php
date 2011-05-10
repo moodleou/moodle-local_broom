@@ -98,6 +98,7 @@ $courseid = restore_dbops::create_new_course($fullname, $shortname, $categoryid)
 $controller = new restore_controller($rand, $courseid,
         backup::INTERACTIVE_NO, backup::MODE_SAMESITE, $USER->id,
         backup::TARGET_NEW_COURSE);
+$controller->get_logger()->set_next(new output_indented_logger(backup::LOG_INFO, false, true));
 $controller->execute_precheck();
 $controller->execute_plan();
 
@@ -118,17 +119,23 @@ print html_writer::tag('p', html_writer::tag('a',
 $hash = md5($DB->get_field('course', 'timemodified', array('id'=>$courseid)));
 $deleteurl = new moodle_url('/course/delete.php');
 print html_writer::tag('form', html_writer::tag('input', '',
-        array('type'=>'submit', 'value'=>get_string('deletecourse', 'local_broom'))) .
+        array('type'=>'submit', 'value'=>get_string('deletecourse', 'local_broom'), 'id'=>'d',
+            'onclick'=>'document.getElementById("r").disabled=false; ' .
+                'document.getElementById("d").disabled=true; return true;')) .
         html_writer::tag('input', '', array('type'=>'hidden', 'name'=>'id', 'value'=>$courseid)) .
         html_writer::tag('input', '', array('type'=>'hidden', 'name'=>'sesskey', 'value'=>sesskey())) .
         html_writer::tag('input', '', array('type'=>'hidden', 'name'=>'delete', 'value'=>$hash)),
         array('action'=>$deleteurl->out(), 'method'=>'post', 'target'=>'_blank'));
 
 print html_writer::tag('form', html_writer::tag('input', '',
-        array('type'=>'submit', 'value'=>get_string('restoreagain', 'local_broom'))) .
+        array('type'=>'submit', 'value'=>get_string('restoreagain', 'local_broom'),
+            'id'=>'r')) .
         html_writer::tag('input', '', array('type'=>'hidden', 'name'=>'file',
             'value'=>$file->get_id())),
         array('action'=>'restore.php', 'method'=>'post'));
+
+print html_writer::tag('script', 'document.getElementById("r").disabled=true;',
+        array('type'=>'text/javascript'));
 
 print $OUTPUT->footer();
 
